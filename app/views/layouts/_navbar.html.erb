@@ -1,19 +1,82 @@
-<nav class="navbar navbar-expand-lg navbar-dark" style= "background: #eff2d8;">
-  <div>
-    <ul class="navbar-nav d-flex">
-      <li class="nav-item p-2">
-        <%= link_to 'Inicio', root_path, class: 'nav-link active', style: "color: black; font-weight: 500;"%>
-      </li>
-      <li class="nav-item p-2">
-        <%= link_to 'Tablero', tasks_path, class: 'nav-link active', style: "color: black; font-weight: 500;" %>
-      </li>
-      <li class="nav-item p-2">
-      <%= link_to 'Bandeja de entrada', tasks_path, class: 'nav-link active', style: "color: black; font-weight: 500;" %>
-      </li>
-      <li class="nav-item ml-auto p-2">
-        <%= button_to 'Log Out', destroy_user_session_path, method: :delete, class: 'nav-link', style: "color: black; font-weight: 500;" %>
-      </li>
-    </ul>
-  <div>
-</nav>
-<hr style="border: 1.5px solid #bdb9b9; margin: 0;">
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        /* Styles for the navigation bar */
+        .navbar {
+            background-color: #eff2d8; /* Yellow background */
+            color: #000; /* Black font color */
+            display: flex;
+            justify-content: space-between;
+            padding: 20px; /* Increased padding for a bigger navbar */
+        }
+
+        /* Styles for the left side of the navigation bar */
+        .navbar-left {
+            display: flex;
+        }
+
+        .navbar-left a {
+            text-decoration: none;
+            color: #000; /* Black font color */
+            padding: 10px;
+            font-size: 16px; /* Increase the font size */
+        }
+
+        /* Styles for the right side of the navigation bar */
+        .navbar-right {
+            display: flex;
+            align-items: center; /* Center vertically within the navbar */
+        }
+
+        .navbar-right .user-info {
+            text-align: right;
+            padding: 10px;
+            font-size: 16px; /* Increase the font size */
+        }
+
+        .user-icon {
+            font-size: 48px; 
+            color: #484848;
+            margin-bottom: 7px;
+        }
+
+        .profile-button {
+            color: white; /* Button text color */
+            padding: 5px 10px; /* Button padding */
+            border: none; /* No button border */
+            border-radius: 5px; /* Rounded button corners */
+            cursor: pointer; /* Add cursor on hover */
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-left">
+            <%= link_to 'Inicio', root_path, class: 'nav-link active', style: "color: black; font-weight: 500; font-size: 20;" %>
+            <%= link_to 'Tablero', tasks_path, class: 'nav-link active', style: "color: black; font-weight: 500; font-size: 20;" %>
+            <%= link_to 'Bandeja de entrada', "/notifications", class: 'nav-link active', style: "color: black; font-weight: 500; font-size: 20;" %>
+            <% if current_user.role == "Supervisor" %>
+              <%= link_to 'Cambiar rol de usuarios', change_role_path, class: 'nav-link', style: "color: black; font-weight: 500; font-size: 20;" %>
+            <% end %>
+        </div>
+        <div class="navbar-right">
+          <% if current_user %>
+            <div class="user-info">
+              <span style="color: black; font-weight: 500; font-size: 16px;">
+                <%= "#{current_user.name} #{current_user.last_name}" %>
+              </span>
+              <br>
+              <span style="color: grey; font-size: 80%;">
+                <%= "#{current_user.role}" %>
+              </span>
+            </div>
+            <%= link_to user_path(current_user) do %>
+              <i class="user-icon fas fa-user-circle"></i>
+            <% end %>
+          <% end %>
+        </div>
+    </div>
+</body>
+</html>

@@ -3,28 +3,31 @@ class TasksController < ApplicationController
 
   # GET /tasks or /tasks.json
   def index
-    @tasks.each do |task|
-      @users_in_tasks[task] = task.users
-    end
+    @tasks = Task.where(group_id: current_user.groups.pluck(:id))
   end
 
   # GET /tasks/1 or /tasks/1.json
   def show
+    @group = Group.find(@task.group_id)
   end
 
   # GET /tasks/new
   def new
     @task = Task.new
+    @my_groups = current_user.groups
   end
 
   # GET /tasks/1/edit
   def edit
+    @my_groups = current_user.groups
   end
 
   # POST /tasks or /tasks.json
   def create
     @task = Task.new(task_params)
-
+    @task.user_id = current_user.id
+    @task.start_date = Date.today
+    
     respond_to do |format|
       if @task.save
         format.html { redirect_to task_url(@task), notice: "Task was successfully created." }
@@ -40,7 +43,7 @@ class TasksController < ApplicationController
   def update
     respond_to do |format|
       if @task.update(task_params)
-        format.html { redirect_to task_url(@task), notice: "Task was successfully updated." }
+        format.html { redirect_to "/tasks", notice: "Task was successfully updated." }
         format.json { render :show, status: :ok, location: @task }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -67,6 +70,6 @@ class TasksController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def task_params
-      params.fetch(:task, {})
+      params.fetch(:task, {}).permit(:name, :description, :status, :end_date, :progress, :group_id)
     end
 end

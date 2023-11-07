@@ -7,7 +7,12 @@ class UsersController < ApplicationController
   end
 
   # GET /users/1 or /users/1.json
+  def show_current
+    @user = User.find(current_user.id)
+  end
+
   def show
+    @user = User.find(params[:id])
   end
 
   # GET /users/new
@@ -17,8 +22,9 @@ class UsersController < ApplicationController
 
   # GET /users/1/edit
   def edit
+    @user = User.find(params[:id])
   end
-
+  
   # POST /users or /users.json
   def create
     @user = User.new(user_params)
@@ -57,6 +63,11 @@ class UsersController < ApplicationController
     end
   end
 
+  def logout
+    sign_out(@user)
+    redirect_to root_path, notice: 'Logged out successfully.'
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user
@@ -65,6 +76,6 @@ class UsersController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def user_params
-      params.fetch(:user, {})
+      params.require(:user).permit(:name, :last_name, :telefono, :email, :role)
     end
 end
